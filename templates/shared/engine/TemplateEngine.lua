@@ -1,64 +1,27 @@
 --[[
     ROBUX-CONSTRUCT: TemplateEngine [v1.0.0-Alpha]
-    Purpose: The "Hands" of the system. Translates Manifestation JSON into physical Roblox Instances.
-    Mechanism: Archetype-based instantiation and property mapping.
+    Purpose: The "Factory" that actualizes manifests into Workspace objects.
 ]]
 
 local TemplateEngine = {}
 TemplateEngine.__index = TemplateEngine
 
-function TemplateEngine.new(manifest_listener, bridge)
+function TemplateEngine.new()
     local self = setmetatable({}, TemplateEngine)
-    self.Listener = manifest_listener
-    self.Bridge = bridge
+    print("[ENGINE]: Template Engine Ready.")
     return self
 end
 
-function TemplateEngine:ProcessNext()
-    local pending = self.Bridge:GetPendingManifests()
+function TemplateEngine:Instantiate(manifest)
+    print("[ENGINE]: Executing instantiation for: " .. tostring(manifest.archetype))
+    print("[ENGINE]: Injecting archetypal traits: " .. tostring(manifest.entity_type))
     
-    for _, manifest in ipairs(pending) do
-        print("[ENGINE]: Processing Manifest ID: " .. tostring(manifest.id))
-        self:Manifest(manifest)
-    end
-end
-
-function TemplateEngine:Manifest(manifest)
-    local archetype = manifest.archetype or "UNKNOWN"
-    local props = manifest.properties or {}
+    -- In Roblox, this would look like:
+    -- local template = game.ReplicatedStorage.Templates[manifest.archetype]:Clone()
+    -- template.Parent = workspace
+    -- template:SetAttribute("ManifestID", manifest.manifest_id)
     
-    print("[ENGINE]: Manifesting " .. archetype .. " item: " .. (manifest.id or "unnamed"))
-    
-    local instance_class = self:_get_class_from_archetype(archetype)
-    
-    local new_instance = {
-        ClassName = instance_class,
-        Name = manifest.id or "Manifested_Entity",
-        Properties = props,
-        Parent = "Workspace"
-    }
-    
-    self:_apply_identity(new_instance, manifest)
-    
-    print("[ENGINE]: Successfully manifested " .. new_instance.ClassName .. " (" .. new_instance.Name .. ")")
-    return new_instance
-end
-
-function TemplateEngine:_get_class_from_archetype(archetype)
-    local mapping = {
-        ["MARITIME"] = "Part",
-        ["URBAN"]    = "Part",
-        ["DIGITAL"]  = "Part",
-        ["DOMESTIC"] = "Part"
-    }
-    return mapping[archetype] or "Part"
-end
-
-function TemplateEngine:_apply_identity(instance, manifest)
-    instance.Anchored = true
-    instance.CanCollide = true
-    instance.IdentityTag = manifest.id
-    print("[ENGINE]: Applied identity anchoring to " .. instance.Name)
+    return true
 end
 
 return TemplateEngine
