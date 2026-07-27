@@ -15,28 +15,32 @@ function ShipyardSystem.new(manifest_path, player_data)
     return self
 end
 
-function ShipyardSystem:LoadManifest(http_service)
-    -- In a real implementation, this would fetch from the Cloudflare Worker
-    -- For now, we assume the Manifest is injected via the ManifestListener
-    print("[SHIPYARD]: Manifest loaded.")
+function ShipyardSystem:LoadManifest(manifest_data)
+    self.Manifest = manifest_data
+    print("[SHIPYARD]: Manifest loaded into memory.")
 end
 
 function ShipyardSystem:PurchaseUpgrade(upgrade_id, level)
-    -- 1. Check if player has enough credits
-    -- 2. Check if level is valid
-    -- 3. Apply multiplier to PlayerData
-    -- 4. Deduct credits
-    print("[SHIPYARD]: Processing purchase for " .. upgrade_id .. " (Level " .. level .. ")")
-    
-    -- Placeholder logic for structural testing
-    local cost = 100 -- In real impl: lookup in self.Manifest[upgrade_id].levels[level].cost
+    if not self.Manifest or not self.Manifest.upgrades[upgrade_id] then
+        print("[SHIPYARD]: Error - Unknown Upgrade ID: " .. tostring(upgrade_id))
+        return false
+    end
+
+    local upgrade_info = self.Manifest.upgrades[upgrade_id].levels[level]
+    if not upgrade_info then
+        print("[SHIPYARD]: Error - Invalid Upgrade Level: " .. level)
+        return false
+    end
+
+    local cost = upgrade_info.cost
+
     if self.PlayerData.credits >= cost then
         self.PlayerData.credits -= cost
-        self.PlayerData.upgrades[upgrade_id] = level
-        print("[SHIPYARD]: Success! New balance: " .. self.PlayerData.credits)
+        self.PlayerData.upgrades[upgrade_id] = (self.PlayerData.upgrades[upgrade_id] or 0) + 1
+        print("[SHIPYARD]: Purchase Successful! " .. upgrade_id .. " Lvl " .. level .. ". New Balance: " .. self.PlayerData.credits)
         return true
     else
-        print("[SHIPYARD]: Insufficient credits!")
+        print("[SHIPYARD]: Insufficient Credits! Required: " .. cost .. ", Available: " .. self.PlayerData.credits)
         return false
     end
 end
