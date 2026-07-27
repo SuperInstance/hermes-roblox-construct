@@ -1,0 +1,32 @@
+{
+  "version": "1.0.0",
+  "upgrades": {
+    "hull_integrity": {
+      "name": "Reinforced Hull",
+      "description": "Increases stability and durability against storm waves.",
+      "levels": [
+        {"level": 1, "cost": 100, "multiplier": 1.2},
+        {"level": 2, "cost": 250, "multiplier": 1.5},
+        {"level": 3, "cost": 600, "multiplier": 2.0}
+      ]
+    },
+    "cargo_capacity": {
+      "name": "Expanded Holds",
+      "description": "Increases the amount of scrap you can carry before returning.",
+      "levels": [
+        {"level": 1, "cost": 150, "multiplier": 1.5},
+        {"level": 2, "cost": 400, "multiplier": 2.0},
+        {"level": 3, "cost": 800, "multiplier": 3.0}
+      ]
+    },
+    "swarm_efficiency": {
+      "name": "Neural Sync Upgrade",
+      "description": "Increases agent movement speed and scavenging rate.",
+      "levels": [
+        {"level": 1, "cost": 200, "multiplier": 1.2},
+        {"level": 2, "cost": 500, "multiplier": 1.6},
+        {"level": 3, "cost": 1000, "multiplier": 2.5}
+      ]
+    }
+  }
+}
